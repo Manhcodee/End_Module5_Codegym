@@ -34,6 +34,13 @@
       "importDate": "2025-03-04",
       "quantity": "10",
       "categoryId": "CAT002"
+    },
+    {
+      "id": "SP03",
+      "name": "Váy ngắn",
+      "importDate": "2025-02-12",
+      "quantity": "12",
+      "categoryId": "CAT003"
     }
   ]
 }

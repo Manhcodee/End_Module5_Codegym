@@ -18,7 +18,6 @@ export default function ProductDetail({ params }) {
         if (response.ok) {
           setProduct(productData);
           
-          // Lấy thông tin category
           const categoriesResponse = await fetch('/api/products');
           const data = await categoriesResponse.json();
           const productCategory = data.categories.find(c => c.id === productData.categoryId);
@@ -53,62 +52,79 @@ export default function ProductDetail({ params }) {
   };
 
   if (!product || !category) {
-    return <div className="container mx-auto p-4">Đang tải...</div>;
+    return (
+      <div className="text-center py-4">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Đang tải...</span>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Chi tiết sản phẩm</h1>
+    <div className="container-fluid">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1 className="h3 mb-0">Chi tiết sản phẩm</h1>
+        <Link href="/" className="btn btn-secondary">
+          <i className="fas fa-arrow-left me-2"></i>
+          Quay lại
+        </Link>
+      </div>
       
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <p className="font-semibold">Mã sản phẩm:</p>
-            <p>{product.id}</p>
+      <div className="card">
+        <div className="card-body">
+          <div className="row g-4">
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label className="form-label fw-bold">Mã sản phẩm:</label>
+                <p className="form-control-plaintext">{product.id}</p>
+              </div>
+              
+              <div className="mb-3">
+                <label className="form-label fw-bold">Tên sản phẩm:</label>
+                <p className="form-control-plaintext">{product.name}</p>
+              </div>
+              
+              <div className="mb-3">
+                <label className="form-label fw-bold">Ngày nhập:</label>
+                <p className="form-control-plaintext">
+                  {moment(product.importDate).format('DD/MM/YYYY')}
+                </p>
+              </div>
+            </div>
+            
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label className="form-label fw-bold">Số lượng:</label>
+                <p className="form-control-plaintext">{product.quantity}</p>
+              </div>
+              
+              <div className="mb-3">
+                <label className="form-label fw-bold">Loại sản phẩm:</label>
+                <p className="form-control-plaintext">{category.name}</p>
+              </div>
+            </div>
           </div>
-          
-          <div>
-            <p className="font-semibold">Tên sản phẩm:</p>
-            <p>{product.name}</p>
-          </div>
-          
-          <div>
-            <p className="font-semibold">Ngày nhập:</p>
-            <p>{moment(product.importDate).format('DD/MM/YYYY')}</p>
-          </div>
-          
-          <div>
-            <p className="font-semibold">Số lượng:</p>
-            <p>{product.quantity}</p>
-          </div>
-          
-          <div>
-            <p className="font-semibold">Loại sản phẩm:</p>
-            <p>{category.name}</p>
-          </div>
-        </div>
 
-        <div className="mt-6 flex gap-4">
-          <Link
-            href={`/products/edit/${product.id}`}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            Sửa
-          </Link>
-          
-          <button
-            onClick={handleDelete}
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-          >
-            Xóa
-          </button>
-          
-          <Link
-            href="/"
-            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-          >
-            Quay lại
-          </Link>
+          <hr />
+
+          <div className="d-flex gap-2">
+            <Link
+              href={`/products/edit/${product.id}`}
+              className="btn btn-warning"
+            >
+              <i className="fas fa-edit me-2"></i>
+              Sửa
+            </Link>
+            
+            <button
+              onClick={handleDelete}
+              className="btn btn-danger"
+            >
+              <i className="fas fa-trash me-2"></i>
+              Xóa
+            </button>
+          </div>
         </div>
       </div>
     </div>

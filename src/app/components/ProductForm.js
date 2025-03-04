@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import moment from 'moment';
+import Link from 'next/link';
 
 export default function ProductForm({ productId }) {
   const router = useRouter();
@@ -14,16 +15,15 @@ export default function ProductForm({ productId }) {
     categoryId: ''
   });
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Lấy danh sách categories
         const response = await fetch('/api/products');
         const data = await response.json();
         setCategories(data.categories);
 
-        // Nếu có productId, lấy thông tin sản phẩm để cập nhật
         if (productId) {
           const product = data.products.find(p => p.id === productId);
           if (product) {
@@ -34,7 +34,7 @@ export default function ProductForm({ productId }) {
           }
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error:', error);
       }
     };
 
@@ -72,6 +72,7 @@ export default function ProductForm({ productId }) {
     }
 
     try {
+      setIsLoading(true);
       const response = await fetch('/api/products', {
         method: productId ? 'PUT' : 'POST',
         headers: {
@@ -84,11 +85,14 @@ export default function ProductForm({ productId }) {
         alert(productId ? 'Cập nhật thành công!' : 'Thêm mới thành công!');
         router.push('/');
       } else {
-        alert('Có lỗi xảy ra!');
+        const data = await response.json();
+        alert(data.error || 'Có lỗi xảy ra!');
       }
     } catch (error) {
       console.error('Error:', error);
       alert('Có lỗi xảy ra!');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -101,99 +105,129 @@ export default function ProductForm({ productId }) {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">
-        {productId ? 'Cập nhật sản phẩm' : 'Thêm mới sản phẩm'}
-      </h1>
+    <div className="container-fluid">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1 className="h3 mb-0">
+          {productId ? 'Cập nhật sản phẩm' : 'Thêm mới sản phẩm'}
+        </h1>
+        <Link href="/" className="btn btn-secondary">
+          <i className="fas fa-arrow-left me-2"></i>
+          Quay lại
+        </Link>
+      </div>
       
-      <form onSubmit={handleSubmit} className="max-w-lg">
-        <div className="mb-4">
-          <label className="block mb-2">Mã sản phẩm:</label>
-          <input
-            type="text"
-            name="id"
-            value={formData.id}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            required
-            readOnly={!!productId}
-          />
-        </div>
+      <div className="card">
+        <div className="card-body">
+          <form onSubmit={handleSubmit}>
+            <div className="row g-4">
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Mã sản phẩm:</label>
+                  <input
+                    type="text"
+                    name="id"
+                    value={formData.id}
+                    onChange={handleChange}
+                    className="form-control"
+                    required
+                    readOnly={!!productId}
+                  />
+                </div>
 
-        <div className="mb-4">
-          <label className="block mb-2">Tên sản phẩm:</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            required
-          />
-          {errors.name && <p className="text-red-500">{errors.name}</p>}
-        </div>
+                <div className="mb-3">
+                  <label className="form-label">Tên sản phẩm:</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className={`form-control ${errors.name ? 'is-invalid' : ''}`}
+                    required
+                  />
+                  {errors.name && (
+                    <div className="invalid-feedback">{errors.name}</div>
+                  )}
+                </div>
 
-        <div className="mb-4">
-          <label className="block mb-2">Ngày nhập:</label>
-          <input
-            type="date"
-            name="importDate"
-            value={formData.importDate}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            required
-          />
-          {errors.importDate && <p className="text-red-500">{errors.importDate}</p>}
-        </div>
+                <div className="mb-3">
+                  <label className="form-label">Ngày nhập:</label>
+                  <input
+                    type="date"
+                    name="importDate"
+                    value={formData.importDate}
+                    onChange={handleChange}
+                    className={`form-control ${errors.importDate ? 'is-invalid' : ''}`}
+                    required
+                  />
+                  {errors.importDate && (
+                    <div className="invalid-feedback">{errors.importDate}</div>
+                  )}
+                </div>
+              </div>
 
-        <div className="mb-4">
-          <label className="block mb-2">Số lượng:</label>
-          <input
-            type="number"
-            name="quantity"
-            value={formData.quantity}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            required
-          />
-          {errors.quantity && <p className="text-red-500">{errors.quantity}</p>}
-        </div>
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label">Số lượng:</label>
+                  <input
+                    type="number"
+                    name="quantity"
+                    value={formData.quantity}
+                    onChange={handleChange}
+                    className={`form-control ${errors.quantity ? 'is-invalid' : ''}`}
+                    required
+                  />
+                  {errors.quantity && (
+                    <div className="invalid-feedback">{errors.quantity}</div>
+                  )}
+                </div>
 
-        <div className="mb-4">
-          <label className="block mb-2">Loại sản phẩm:</label>
-          <select
-            name="categoryId"
-            value={formData.categoryId}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            required
-          >
-            <option value="">Chọn loại sản phẩm</option>
-            {categories.map(category => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-          {errors.categoryId && <p className="text-red-500">{errors.categoryId}</p>}
-        </div>
+                <div className="mb-3">
+                  <label className="form-label">Loại sản phẩm:</label>
+                  <select
+                    name="categoryId"
+                    value={formData.categoryId}
+                    onChange={handleChange}
+                    className={`form-select ${errors.categoryId ? 'is-invalid' : ''}`}
+                    required
+                  >
+                    <option value="">Chọn loại sản phẩm</option>
+                    {categories.map(category => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.categoryId && (
+                    <div className="invalid-feedback">{errors.categoryId}</div>
+                  )}
+                </div>
+              </div>
+            </div>
 
-        <div className="flex gap-4">
-          <button
-            type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            {productId ? 'Cập nhật' : 'Thêm mới'}
-          </button>
-          <button
-            type="button"
-            onClick={() => router.push('/')}
-            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-          >
-            Hủy
-          </button>
+            <hr />
+
+            <div className="d-flex gap-2">
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Đang xử lý...
+                  </>
+                ) : (
+                  <>
+                    <i className="fas fa-save me-2"></i>
+                    {productId ? 'Cập nhật' : 'Thêm mới'}
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   );
 } 
