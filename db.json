@@ -29,18 +29,32 @@
       "categoryId": "CAT002"
     },
     {
-      "id": "1",
+      "id": "SP003",
       "name": "Quần bò",
       "importDate": "2025-03-04",
       "quantity": "10",
       "categoryId": "CAT002"
     },
     {
-      "id": "SP03",
+      "id": "SP004",
       "name": "Váy ngắn",
       "importDate": "2025-02-12",
       "quantity": "12",
       "categoryId": "CAT003"
+    },
+    {
+      "id": "SP005",
+      "name": "Váy Dài",
+      "importDate": "2024-08-12",
+      "quantity": "24",
+      "categoryId": "CAT003"
+    },
+    {
+      "id": "SP006",
+      "name": "Áo dài nữ",
+      "importDate": "2024-03-12",
+      "quantity": "12",
+      "categoryId": "CAT001"
     }
   ]
 }
