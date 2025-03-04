@@ -1,0 +1,39 @@
+{
+  "categories": [
+    {
+      "id": "CAT001",
+      "name": "Áo"
+    },
+    {
+      "id": "CAT002",
+      "name": "Quần"
+    },
+    {
+      "id": "CAT003",
+      "name": "Váy"
+    }
+  ],
+  "products": [
+    {
+      "id": "SP001",
+      "name": "Áo thun nam",
+      "importDate": "2024-03-04",
+      "quantity": 100,
+      "categoryId": "CAT001"
+    },
+    {
+      "id": "SP002",
+      "name": "Quần jean nữ",
+      "importDate": "2024-03-03",
+      "quantity": 50,
+      "categoryId": "CAT002"
+    },
+    {
+      "id": "1",
+      "name": "Quần bò",
+      "importDate": "2025-03-04",
+      "quantity": "10",
+      "categoryId": "CAT002"
+    }
+  ]
+}
