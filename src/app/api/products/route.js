@@ -2,21 +2,21 @@ import { promises as fs } from 'fs';
 import { NextResponse } from 'next/server';
 import path from 'path';
 
-// Đường dẫn tới file db.json
+// link toi file db.json
 const dbPath = path.join(process.cwd(), 'db.json');
 
-// Đọc dữ liệu từ file db.json
+// Đọc file db.json
 async function getData() {
   const data = await fs.readFile(dbPath, 'utf8');
   return JSON.parse(data);
 }
 
-// Lưu dữ liệu vào file db.json
+// save dữ liệu vào db.json
 async function saveData(data) {
   await fs.writeFile(dbPath, JSON.stringify(data, null, 2));
 }
 
-// GET: Lấy danh sách sản phẩm và categories
+// Lấy danh sách product và categories
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -36,19 +36,19 @@ export async function GET(request) {
 
     let filteredProducts = [...data.products];
 
-    // Tìm kiếm theo tên (gần đúng)
+    // search tên
     if (searchName) {
       filteredProducts = filteredProducts.filter(p => 
         p.name.toLowerCase().includes(searchName.toLowerCase())
       );
     }
 
-    // Tìm kiếm theo thể loại
+    // search thể loại
     if (categoryId) {
       filteredProducts = filteredProducts.filter(p => p.categoryId === categoryId);
     }
 
-    // Sắp xếp theo số lượng tăng dần
+    // Sắp xếp số lượng tăng dần
     filteredProducts.sort((a, b) => a.quantity - b.quantity);
 
     return NextResponse.json({
@@ -63,13 +63,12 @@ export async function GET(request) {
   }
 }
 
-// POST: Thêm sản phẩm mới
+// add sản phẩm
 export async function POST(request) {
   try {
     const data = await getData();
     const newProduct = await request.json();
 
-    // Kiểm tra các ràng buộc
     if (newProduct.name.length > 100) {
       return NextResponse.json(
         { error: 'Tên sản phẩm không được dài quá 100 ký tự' },
@@ -89,13 +88,12 @@ export async function POST(request) {
   }
 }
 
-// PUT: Cập nhật sản phẩm
+// update sản phẩm
 export async function PUT(request) {
   try {
     const data = await getData();
     const updatedProduct = await request.json();
 
-    // Kiểm tra các ràng buộc
     if (updatedProduct.name.length > 100) {
       return NextResponse.json(
         { error: 'Tên sản phẩm không được dài quá 100 ký tự' },
